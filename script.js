@@ -27,8 +27,12 @@ const db = getDatabase(app);
 function importarSchoolsCSV(filePath) {
   const schools = [];
 
-  fs.createReadStream(filePath)
-    .pipe(csv())
+  fs.createReadStream(filePath, { encoding: 'utf8' })
+    .pipe(
+      csv({
+        mapHeaders: ({ header }) => header.trim().replace(/^\ufeff/, ''),
+      })
+    )
     .on('data', (row) => {
       // Cada "row" é um objeto com as colunas do CSV
       schools.push(row);
@@ -95,6 +99,6 @@ const SearchSchoolParalisada = async () => {
 // };
 
 // Executa a função
-// importarSchoolsCSV('schools.csv');
-SearchSchoolParalisada();
+importarSchoolsCSV('schools.csv');
+// SearchSchoolParalisada();
 // AllSkills();
